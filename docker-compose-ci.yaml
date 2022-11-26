@@ -10,7 +10,7 @@ services:
       - "80:80"
 
   api:
-    image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: standocker29/diploma_stn_docker:${{GITHUB_REF_NAME-$GITHUB_RUN_ID}}
     restart: always
     env_file:
       - .env
@@ -23,7 +23,7 @@ services:
       - "8000:8000"
 
   migrations:
-    image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: standocker29/diploma_stn_docker:${{GITHUB_REF_NAME-$GITHUB_RUN_ID}}
     depends_on:
       db:
         condition: service_healthy
