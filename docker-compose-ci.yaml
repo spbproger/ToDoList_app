@@ -12,6 +12,10 @@ services:
   api:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
     depends_on:
