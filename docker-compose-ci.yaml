@@ -12,8 +12,8 @@ services:
   api:
     image: standocker29/diploma_stn_docker:${{GITHUB_REF_NAME-$GITHUB_RUN_ID}}
     restart: always
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -31,8 +31,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     command: >
       sh -c "python ./manage.py migrate"
 
