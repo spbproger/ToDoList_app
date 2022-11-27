@@ -27,7 +27,7 @@ services:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file:
       - .env
-    depends_on:
+#    depends_on:
 #      db:
 #        condition: service_healthy
     command: >
