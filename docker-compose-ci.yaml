@@ -12,10 +12,6 @@ services:
   api:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
     depends_on:
@@ -26,20 +22,15 @@ services:
     ports:
       - "8000:8000"
 
+
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
-    env_file:
-      - .env
-    command: >
-      sh -c "python ./manage.py makemigrations"
-      sh -c "python ./manage.py migrate"
+    command: python ./manage.py migrate
 
   db:
     image: postgres:latest
@@ -47,19 +38,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-#    env_file:
-#      - .env
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
 
-
-volumes:
-  pg_data:
