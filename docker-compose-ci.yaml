@@ -13,7 +13,7 @@ services:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     env_file:
-      - .env
+      - ./.env
     depends_on:
       db:
         condition: service_healthy
@@ -26,7 +26,7 @@ services:
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file:
-      - .env
+      - ./.env
     depends_on:
       db:
         condition: service_healthy
@@ -36,8 +36,6 @@ services:
 
   db:
     image: postgres:latest
-    env_file:
-      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
