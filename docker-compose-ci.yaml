@@ -30,7 +30,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: python ./manage.py migrate
+    command: >
+      sh -c "python manage.py makemigrations"
+      sh -c "python manage.py migrate"
 
   db:
     image: postgres:latest

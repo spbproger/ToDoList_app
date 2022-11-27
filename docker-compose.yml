@@ -26,15 +26,11 @@ services:
 
   migrations:
     build: .
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
-#    environment:
-#      POSTGRES_DB: ${POSTGRES_DB}
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    env_file:
-      - .env
     command: >
       sh -c "python manage.py makemigrations"
       sh -c "python manage.py migrate"
