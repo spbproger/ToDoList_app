@@ -36,6 +36,7 @@ services:
     env_file:
       - .env
     command: >
+      sh -c "python manage.py makemigrations"
       sh -c "python manage.py migrate"
 
   db:
