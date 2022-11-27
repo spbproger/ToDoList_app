@@ -27,9 +27,9 @@ services:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file:
       - .env
-#    depends_on:
-#      db:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     command: >
       sh -c "python manage.py makemigrations"
       sh -c "python manage.py migrate"
@@ -39,9 +39,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 121212
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
@@ -49,4 +49,7 @@ services:
       retries: 5
     volumes:
       - ./pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
 
