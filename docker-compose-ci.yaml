@@ -32,8 +32,7 @@ services:
 
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-#    env_file:
-#      - .env
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -45,8 +44,8 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "python manage.py makemigrations"
-      sh -c "python manage.py migrate"
+      sh -c "python3 manage.py makemigrations"
+      sh -c "python3 manage.py migrate"
 
   db:
     image: postgres:latest
