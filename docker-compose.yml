@@ -27,8 +27,15 @@ services:
   migrations:
     build:
       context: .
-    env_file:
-      - .env
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 121212
+      DB_NAME: postgres
+      SECRET_KEY: 'django-insecure-+&m9&moapke)-ibq^reokbz*hnapa%%7wq8krc_gzw^s+ka_%*'
+      DB_HOST: 'db'
+      DB_PORT: 5432
+      DEBUG: True
+      LANGUAGE_CODE: 'ru-ru'
     depends_on:
       db:
         condition: service_healthy

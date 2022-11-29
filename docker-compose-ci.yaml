@@ -12,15 +12,15 @@ services:
   api:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
-#    env_file:
-#      - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       SECRET_KEY: ${SECRET_KEY}
-      POSTGRES_HOST: 'db'
+      DB_HOST: 'db'
+      DB_PORT: ${DB_PORT}
       DEBUG: True
+      LANGUAGE_CODE: 'ru-ru'
     depends_on:
       db:
         condition: service_healthy
@@ -33,12 +33,12 @@ services:
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       SECRET_KEY: ${SECRET_KEY}
-      POSTGRES_HOST: 'db'
-      POSTGRES_PORT: ${DB_PORT}
+      DB_HOST: 'db'
+      DB_PORT: ${DB_PORT}
       DEBUG: True
       LANGUAGE_CODE: 'ru-ru'
     depends_on:
