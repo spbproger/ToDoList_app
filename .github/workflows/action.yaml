@@ -47,5 +47,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd todolist_ci
-            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d             
+            cd todolist_ci             
+            echo ${{ secrets.PASSWORD }} | docker-compose up -d
+    run: |
+      docker system prune -a -f
