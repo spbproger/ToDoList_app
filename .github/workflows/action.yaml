@@ -48,6 +48,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd todolist_ci             
-            echo ${{ secrets.PASSWORD }} | docker-compose up -d
-            echo ${{ secrets.PASSWORD }} | docker system prune -a -f
+            docker-compose up -d
+            docker system prune -a -f
 
