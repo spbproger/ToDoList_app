@@ -16,7 +16,7 @@ services:
       - "8000:8000"
     restart: always
     env_file:
-      - .env
+      - .env_docker
     depends_on:
       db:
         condition: service_healthy
@@ -27,40 +27,34 @@ services:
   migrations:
     build:
       context: .
-    environment:
-      DB_USER: postgres
-      DB_PASSWORD: 121212
-      DB_NAME: postgres
-      SECRET_KEY: 'django-insecure-+&m9&moapke)-ibq^reokbz*hnapa%%7wq8krc_gzw^s+ka_%*'
-      DB_HOST: 'db'
-      DB_PORT: 5432
-      DEBUG: True
-      LANGUAGE_CODE: 'ru-ru'
+    env_file:
+      - .env_docker
     depends_on:
       db:
         condition: service_healthy
-    command: >      
-      sh -c "python3 manage.py migrate"
+    command: >
+      sh -c "python manage.py migrate"
 
   db:
-    image: postgres
+    image: postgres:14.5-alpine
     restart: always
     env_file:
-      - .env
+      - .env_docker
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       timeout: 5s
       interval: 5s
       retries: 5
     volumes:
       - db_data:/var/lib/postgresql/data
+
+
 
 volumes:
   db_data:
