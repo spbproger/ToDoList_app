@@ -50,4 +50,3 @@ jobs:
             cd todolist_ci             
             docker-compose up -d
             docker system prune -a -f
-
