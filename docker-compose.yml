@@ -4,62 +4,62 @@ services:
   frontend:
     image: sermalenk/skypro-front:lesson-34
     restart: always
-#    depends_on:
-#      - api
+    depends_on:
+      - api
     ports:
       - "80:80"
 
-#  api:
-#    build:
-#      context: .
-#    ports:
-#      - "8000:8000"
-#    restart: always
-#    env_file:
-#      - .env
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#      migrations:
-#        condition: service_completed_successfully
-#
-#
-#  migrations:
-#    build:
-#      context: .
-#    environment:
-#      DB_USER: postgres
-#      DB_PASSWORD: 121212
-#      DB_NAME: postgres
-#      SECRET_KEY: 'django-insecure-+&m9&moapke)-ibq^reokbz*hnapa%%7wq8krc_gzw^s+ka_%*'
-#      DB_HOST: 'db'
-#      DB_PORT: 5432
-#      DEBUG: True
-#      LANGUAGE_CODE: 'ru-ru'
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    command: >
-#      sh -c "python manage.py migrate"
-#
-#  db:
-#    image: postgres
-#    restart: always
-#    env_file:
-#      - .env
-#    environment:
-#      POSTGRES_USER: ${DB_USER}
-#      POSTGRES_PASSWORD: ${DB_PASSWORD}
-#      POSTGRES_DB: ${DB_NAME}
-#    ports:
-#      - "5432:5432"
-#    healthcheck:
-#      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-#      timeout: 5s
-#      interval: 5s
-#      retries: 5
-#    volumes:
-#      - db_data:/var/lib/postgresql/data
-#
-#volumes:
-#  db_data:
+  api:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+
+  migrations:
+    build:
+      context: .
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 121212
+      DB_NAME: postgres
+      SECRET_KEY: 'django-insecure-+&m9&moapke)-ibq^reokbz*hnapa%%7wq8krc_gzw^s+ka_%*'
+      DB_HOST: 'db'
+      DB_PORT: 5432
+      DEBUG: True
+      LANGUAGE_CODE: 'ru-ru'
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate"
+
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      timeout: 5s
+      interval: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
