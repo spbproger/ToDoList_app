@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: always
     depends_on:
       - api
@@ -21,11 +21,14 @@ services:
       DB_PORT: ${DB_PORT}
       DEBUG: False
       LANGUAGE_CODE: 'ru-ru'
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
     depends_on:
       db:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
+
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     environment:
@@ -37,13 +40,16 @@ services:
       DB_PORT: ${DB_PORT}
       DEBUG: False
       LANGUAGE_CODE: 'ru-ru'
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
     depends_on:
       db:
         condition: service_healthy
-    command: python manage.py migrate
+    command: >
+      sh -c "python3 manage.py migrate"
 
   db:
-    image: postgres:latest
+    image: postgres:15.0-alpine
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -55,7 +61,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
 volumes:
-  pg_data:
+  db_data:
