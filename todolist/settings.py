@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     # created by user
     'core',
+    'goals',
 
     # added from Hubs
     'rest_framework',
