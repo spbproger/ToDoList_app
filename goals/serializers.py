@@ -6,6 +6,14 @@ from rest_framework import serializers
 class GoalCategorySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
+    def validate_category(self, value):
+        if value.is_deleted:
+            raise serializers.ValidationError("not allowed in deleted category")
+
+        if value.user != self.context["request"].user:
+            raise serializers.ValidationError("not owner of category")
+
+        return value
     class Meta:
         model = GoalCategory
         fields = '__all__'
@@ -13,7 +21,7 @@ class GoalCategorySerializer(serializers.ModelSerializer):
 
 
 class GoalCategoryCreateSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = GoalCategory
@@ -24,6 +32,12 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
 class GoalSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
+    def validate(self, value):
+        if value.user != self.context["request"].user:
+            raise serializers.ValidationError("not owner of category")
+
+        return value
+
     class Meta:
         model = Goal
         fields = '__all__'
@@ -32,15 +46,6 @@ class GoalSerializer(serializers.ModelSerializer):
 
 class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    def validate_category(self, value):
-        if value.is_deleted:
-            raise serializers.ValidationError("not allowed in deleted category")
-
-        if value.user != self.context["request"].user:
-            raise serializers.ValidationError("not owner of category")
-
-        return value
 
     class Meta:
         model = Goal
