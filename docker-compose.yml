@@ -9,7 +9,7 @@ services:
     ports:
       - "80:80"
 #    volumes:
-#      - ./nginx.conf:/etc/nginx/conf.d/default.config
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
   api:
     build:
@@ -24,7 +24,6 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-
 
   migrations:
     build:
@@ -55,8 +54,6 @@ services:
       retries: 5
     volumes:
       - db_data:/var/lib/postgresql/data
-
-
 
 volumes:
   db_data:
