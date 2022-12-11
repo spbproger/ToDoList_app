@@ -1,9 +1,8 @@
-from django.db import transaction
-from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 from rest_framework import generics, permissions, filters
 from rest_framework.pagination import LimitOffsetPagination
 from goals import serializers
-from .filters import GoalDateFilter
+from .filters import GoalFilter
 from .models import GoalCategory, Goal, GoalComment
 # from .models import GoalCategory, Goal, GoalComment, Board, BoardParticipant
 # from goals.permissions import BoardPermissions
@@ -25,16 +24,16 @@ class GoalCategoryListView(generics.ListAPIView):
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.GoalCategorySerializer
-    pagination_class = LimitOffsetPagination
+    #pagination_class = LimitOffsetPagination
+
+    search_fields = ['title']
+    ordering_fields = ['title', 'created']
+    ordering = ['title']
     filter_backends = [
-        DjangoFilterBackend,
         filters.OrderingFilter,
         filters.SearchFilter,
     ]
-    filterset_fields = ["user"]
-    ordering_fields = ['title', 'created']
-    ordering = ['title']
-    search_fields = ['title']
+    #filterset_fields = ["user"]
 
     def get_queryset(self):
         return GoalCategory.oblects.filter(user=self.request.user, is_deleted=False)
@@ -73,17 +72,16 @@ class GoalListView(generics.ListAPIView):
     model = Goal
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.GoalSerializer
-    pagination_class = LimitOffsetPagination
+    #pagination_class = LimitOffsetPagination
+    ordering_fields = ['priority', 'due_date']
+    ordering = ['-priority', 'due_date']
+    search_fields = ['title']
     filter_backends = [
-        DjangoFilterBackend,
+        django_filters.rest_framework.DjangoFilterBackend,
         filters.OrderingFilter,
         filters.SearchFilter,
     ]
-
-    # filterset_class = GoalDateFilter
-    ordering_fields = ["-priority", "due_date"]
-    ordering = ["-priority", "due_date"]
-    search_fields = ['title']
+    filterset_class = GoalFilter
 
     def get_queryset(self):
         return Goal.oblects.filter(user=self.request.user).exclude(status=Goal.Status.archived)
@@ -115,13 +113,13 @@ class GoalCommentListView(generics.ListAPIView):
     model = GoalComment
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.GoalCommentSerializer
+    ordering = ["-id"]
     filter_backends = [
-        DjangoFilterBackend,
+        django_filters.rest_framework.DjangoFilterBackend,
         filters.OrderingFilter,
         filters.SearchFilter,
     ]
     filterset_fields = ["goal"]
-    ordering = ["-id"]
 
     def get_queryset(self):
         return GoalComment.objects.filter(user=self.request.user)
