@@ -23,7 +23,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         if password_repeat != password:
             raise serializers.ValidationError({'password': "Passwords do not match. Пароли не совпадают."})
-
         return attrs
 
     def create(self, validated_data):
@@ -46,7 +45,6 @@ class LoginSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             password=validated_data['password']
         )
-
         if not user:
             raise AuthenticationFailed
         return user
@@ -77,7 +75,6 @@ class UpdatePasswordSerializer(serializers.Serializer):
         except Exception as e:
             raise serializers.ValidationError({'new_password': e.messages})
         return attrs
-
 
     def update(self, instance, validated_data):
         instance.password = make_password(validated_data['new_password'])

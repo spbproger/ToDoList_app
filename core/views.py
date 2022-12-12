@@ -1,11 +1,8 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-
-
 from django.contrib.auth import get_user_model, login, logout
-
 from . import serializers
-from .serializers import UpdatePasswordSerializer
+
 
 USER_MODEL = get_user_model()
 
@@ -42,7 +39,7 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
 class UpdatePasswordView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UpdatePasswordSerializer
+    serializer_class = serializers.UpdatePasswordSerializer
 
     def get_object(self):
         return self.request.user
