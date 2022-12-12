@@ -48,6 +48,7 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 		instance.save()
 		return instance
 
+
 class GoalCreateView(CreateAPIView):
 	model = Goal
 	permission_classes = [permissions.IsAuthenticated]
