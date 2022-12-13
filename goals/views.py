@@ -5,12 +5,52 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.pagination import LimitOffsetPagination
 from goals.models import GoalCategory, GoalComment, Board
 from goals.permissions import BoardPermissions
-from goals.serializers.board import BoardSerializer
+from goals.serializers.board import BoardSerializer, BoardCreateSerializer, BoardListSerializer
 from goals.serializers.category import CategoryCreateSerializer, CategorySerializer
 from goals.filters import GoalDateFilter
 from goals.models import Goal
 from goals.serializers.comment import CommentSerializer, CommentCreateSerializer
 from goals.serializers.goal import GoalCreateSerializer, GoalSerializer
+
+
+class BoardCreateView(CreateAPIView):
+    permission_classes = [BoardPermissions]
+    serializer_class = BoardCreateSerializer
+
+
+class BoardListView(ListAPIView):
+    model = Board
+    permission_classes = [BoardPermissions]
+    serializer_class = BoardListSerializer
+    ordering = ['title']
+
+    def get_queryset(self):
+        return Board.objects.prefetch_related('participants').filter(
+            participants__user_id=self.request.user.id,
+            is_deleted=False
+        )
+
+
+class BoardView(RetrieveUpdateDestroyAPIView):
+    model = Board
+    permission_classes = [BoardPermissions]
+    serializer_class = BoardSerializer
+
+    def get_queryset(self):
+        return Board.objects.prefetch_related('participants').filter(
+            participants__user_id=self.request.user.id,
+            is_deleted=False
+        )
+
+    def perform_destroy(self, instance: Board):
+        with transaction.atomic():
+            instance.is_deleted = True
+            instance.save(update_fields='is_deleted',)
+            instance.categories.update(is_deleted=True)
+            Goal.objects.filter(category__board=instance).update(
+                status=Goal.Status.archived
+            )
+        return instance
 
 
 class GoalCategoryCreateView(CreateAPIView):
