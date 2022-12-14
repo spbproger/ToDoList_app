@@ -200,3 +200,4 @@ class BoardView(RetrieveUpdateDestroyAPIView):
                 status=Goal.Status.archived
             )
         return instance
+
