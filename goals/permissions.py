@@ -2,6 +2,13 @@ from rest_framework import permissions
 from goals.models import BoardParticipant, Goal, GoalCategory, Board, GoalComment
 
 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.user_id == request.user.id
+
+
 class BoardPermissions(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: Board):
         if not request.user.is_authenticated:
