@@ -18,9 +18,9 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 
 	def validate_category(self, value: GoalCategory):
-		if self.context['request'].user.id != value.user_id:
+		if self.context['request'].user_id != value.user.id:
 			raise exceptions.PermissionDenied
-		if self.instance.category.board_id != value.board_id:
+		if self.instance.category.board_id != value.board.id:
 			raise serializers.ValidationError('Transfer between projects not prefer')
 		return value
 
@@ -34,6 +34,6 @@ class GoalSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 
 	def validate_category(self, value: GoalCategory):
-		if self.context['request'].user.id != value.user_id:
+		if self.context['request'].user_id != value.user.id:
 			raise exceptions.PermissionDenied
 		return value
