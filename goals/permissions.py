@@ -46,5 +46,5 @@ class CommentPermissions(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj: GoalComment):
         return any((
             request.method in permissions.SAFE_METHODS,
-            obj.user_id== request.user.id
+            obj.user_id == request.user.id
         ))

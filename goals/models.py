@@ -26,6 +26,9 @@ class Board(DatesModelMixin):
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
+    def __str__(self):
+        return self.title
+
 
 class BoardParticipant(DatesModelMixin):
     class Meta:
@@ -72,6 +75,9 @@ class GoalCategory(DatesModelMixin):
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
+    def __str__(self):
+        return self.title
+
 
 class Goal(DatesModelMixin):
     class Status(models.IntegerChoices):
@@ -105,6 +111,9 @@ class Goal(DatesModelMixin):
     )
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT, related_name="goals")
     category = models.ForeignKey(GoalCategory, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
 
 
 class GoalComment(DatesModelMixin):

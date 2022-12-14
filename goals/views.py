@@ -15,13 +15,13 @@ from goals.filters import GoalDateFilter
 
 
 class BoardCreateView(CreateAPIView):
-    permission_classes = [BoardPermissions]
+    permission_classes = [BoardPermissions, IsOwnerOrReadOnly]
     serializer_class = BoardCreateSerializer
 
 
 class BoardListView(ListAPIView):
     model = Board
-    permission_classes = [BoardPermissions]
+    permission_classes = [BoardPermissions, IsOwnerOrReadOnly]
     serializer_class = BoardListSerializer
     ordering = ['title']
 
@@ -34,7 +34,7 @@ class BoardListView(ListAPIView):
 
 class BoardView(RetrieveUpdateDestroyAPIView):
     model = Board
-    permission_classes = [BoardPermissions]
+    permission_classes = [BoardPermissions, IsOwnerOrReadOnly]
     serializer_class = BoardSerializer
 
     def get_queryset(self):
@@ -57,7 +57,7 @@ class BoardView(RetrieveUpdateDestroyAPIView):
 
 class GoalCategoryCreateView(CreateAPIView):
     model = GoalCategory
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [CategoryPermissions]
     serializer_class = CategoryCreateSerializer
 
 

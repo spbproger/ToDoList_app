@@ -20,7 +20,7 @@ class GoalCommentAdmin(admin.ModelAdmin):
 
 class BoardAdmin(admin.ModelAdmin):
 	list_display = ("title", "created", "updated")
-	search_fields = ("title",)
+	search_fields = ("title", "user")
 
 
 admin.site.register(GoalCategory, GoalCategoryAdmin)
