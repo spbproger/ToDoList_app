@@ -5,8 +5,7 @@ services:
     image: sermalenk/skypro-front:lesson-37
     restart: always
     depends_on:
-      api:
-        condition: service_started
+      - api
     ports:
       - "80:80"
 
