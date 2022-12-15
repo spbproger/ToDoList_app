@@ -11,9 +11,9 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
-	def validate_board(self, value: Board):
+	def validate_category(self, value: GoalCategory):
 		if value.is_deleted:
-			raise serializers. ValidationError('Not allowed to be deleted')
+			raise serializers.ValidationError('Not allowed to be deleted')
 		if not BoardParticipant.objects.filter(
 				board=value,
 				role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],

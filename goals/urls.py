@@ -7,7 +7,7 @@ urlpatterns = [
 	path("board/<pk>", views.BoardView.as_view(), name='board_rud',),
 
 	path("goal_category/create", views.GoalCategoryCreateView.as_view(), name='category_create'),
-	path("goal_category/list", views.GoalCategoryListView.as_view(), name='categorys_list'),
+	path("goal_category/list", views.GoalCategoryListView.as_view(), name='categories_list'),
 	path("goal_category/<pk>", views.GoalCategoryView.as_view(), name='category_rud'),
 
 	path("goal/create", views.GoalCreateView.as_view(), name='goal_create'),
