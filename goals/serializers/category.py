@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from goals.models import GoalCategory, Board, BoardParticipant
+from goals.models import GoalCategory, BoardParticipant
 from core.serializers import ProfileSerializer
 
 
@@ -24,7 +24,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-	user = ProfileSerializer(read_only=True)
+	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 	class Meta:
 		model = GoalCategory
