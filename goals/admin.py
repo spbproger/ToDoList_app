@@ -5,6 +5,7 @@ from goals.models import GoalCategory, Goal, GoalComment, Board
 
 class BoardAdmin(admin.ModelAdmin):
 	list_display = ("title", "user", "created", "updated")
+
 	search_fields = ("title",)
 
 
