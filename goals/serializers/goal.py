@@ -1,13 +1,11 @@
 from rest_framework import serializers, exceptions
 from core.serializers import ProfileSerializer
-from goals.models import Goal, GoalCategory
+from goals.models import Goal, GoalCategory, BoardParticipant
+from rest_framework.exceptions import ValidationError
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
 	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-	category = serializers.PrimaryKeyRelatedField(
-		queryset=GoalCategory.objects.filter(is_deleted=False)
-	)
 
 	class Meta:
 		model = Goal
@@ -15,10 +13,13 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 
 	def validate(self, value: GoalCategory):
-		if self.context['request'].user_id != value.user.id:
-			raise exceptions.PermissionDenied
-		if self.instance.category.board_id != value.board.id:
-			raise serializers.ValidationError('Transfer between projects not prefer')
+		role_use = BoardParticipant.objects.filter(
+			user=value.get('user'),
+			board=value.get('category').board,
+			role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+		)
+		if not role_use:
+			raise ValidationError('not allowed')
 		return value
 
 
@@ -30,7 +31,9 @@ class GoalSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
-	def validate_category(self, value: GoalCategory):
-		if self.context['request'].user_id != value.user.id:
-			raise exceptions.PermissionDenied
+	def validate_category(self, value):
+		if value.is_deleted:
+			raise serializers.ValidationError('not allowed in deleted category')
+		if value.user != self.context['request'].user:
+			raise serializers.ValidationError('not owner of category')
 		return value
