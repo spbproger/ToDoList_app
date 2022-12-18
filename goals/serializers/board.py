@@ -4,6 +4,12 @@ from goals.models import Board, BoardParticipant
 from core.models import User
 
 
+class BoardListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = "__all__"
+
+
 class BoardCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -46,7 +52,7 @@ class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
         fields = "__all__"
-        read_only_fields = ("id", "created", "updated", "board")
+        read_only_fields = ("id", "created", "updated")
 
     def update(self, instance, validated_data):
         owner = validated_data.pop("user")
@@ -74,7 +80,3 @@ class BoardSerializer(serializers.ModelSerializer):
         return instance
 
 
-class BoardListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Board
-        fields = "__all__"
