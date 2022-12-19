@@ -1,7 +1,7 @@
-from rest_framework import serializers
-
+from rest_framework import serializers, exceptions
 from core.serializers import ProfileSerializer
-from goals.models import  Goal
+from goals.models import Goal, GoalCategory, BoardParticipant
+from rest_framework.exceptions import ValidationError
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
@@ -12,6 +12,16 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
+	def validate(self, value: GoalCategory):
+		role_use = BoardParticipant.objects.filter(
+			user=value.get('user'),
+			board=value.get('category').board,
+			role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+		)
+		if not role_use:
+			raise ValidationError('not allowed')
+		return value
+
 
 class GoalSerializer(serializers.ModelSerializer):
 	user = ProfileSerializer(read_only=True)
@@ -21,3 +31,9 @@ class GoalSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
+	def validate_category(self, value):
+		if value.is_deleted:
+			raise serializers.ValidationError('not allowed in deleted category')
+		if value.user != self.context['request'].user:
+			raise serializers.ValidationError('not owner of category')
+		return value
