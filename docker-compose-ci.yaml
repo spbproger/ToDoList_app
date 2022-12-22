@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: always
     depends_on:
       - api
@@ -23,11 +23,30 @@ services:
       LANGUAGE_CODE: 'ru-ru'
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
       SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
     depends_on:
       db:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
+
+  bot:
+    image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    restart: always
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    environment:
+      DEBUG: ${DEBUG}
+      SECRET_KEY: ${SECRET_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
+    command: >
+      sh -c "python3 manage.py runbot"      
+
 
   migrations:
     image: standocker29/diploma_stn_docker:$GITHUB_REF_NAME-$GITHUB_RUN_ID
@@ -42,6 +61,7 @@ services:
       LANGUAGE_CODE: 'ru-ru'
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
       SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
     depends_on:
       db:
         condition: service_healthy
