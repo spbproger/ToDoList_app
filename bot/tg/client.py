@@ -14,7 +14,7 @@ class TgClient:
 
     def get_updates(self, offset: int = 0, timeout: int = 60) -> dc.GetUpdatesResponse:
         """
-        Получение ботом исходящих сообщений от пользователя
+        Получение Telegram ботом сообщений от пользователя
         """
         url = self.get_url("getUpdates")
         response = requests.get(url, params={"offset": offset, "timeout": timeout})
@@ -22,7 +22,7 @@ class TgClient:
 
     def send_message(self, chat_id: int, text: str) -> dc.SendMessageResponse:
         """
-        Получение пользователем сообщений от бота
+        Получение пользователем сообщений от Telegram бота
         """
         url = self.get_url("sendMessage")
         response = requests.get(url, params={"chat_id": chat_id, "text": text})

@@ -1,6 +1,5 @@
 from django.conf import settings
 from rest_framework import generics, status
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -11,7 +10,7 @@ from .tg.client import TgClient
 
 class BotVerificationView(generics.UpdateAPIView):
     model = TgUser
-    permission_classess = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = TgUserSerializer
     http_method_names = ["patch"]
 
@@ -33,5 +32,5 @@ class BotVerificationView(generics.UpdateAPIView):
 
         tg_user = request.user
         tg_user.save()
-        tg_client.send_message(chat_id=tg_user.tg_chat_id, text="Good!")
+        #tg_client.send_message(chat_id=tg_user.tg_chat_id, text="Good!")
         return Response(data=data, status=status.HTTP_200_OK)
