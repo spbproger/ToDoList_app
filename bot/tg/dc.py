@@ -24,7 +24,7 @@ class MessageChat:
     title: str | None
     first_name: str | None
     last_name: str | None
-    username: str | None
+    username: str = ""
     type: str
 
     class Meta:

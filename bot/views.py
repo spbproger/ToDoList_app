@@ -32,5 +32,5 @@ class BotVerificationView(generics.UpdateAPIView):
 
         tg_user = request.user
         tg_user.save()
-        #tg_client.send_message(chat_id=tg_user.tg_chat_id, text="Good!")
+        tg_client.send_message(chat_id=tg_user.tg_chat_id, text="Good!")
         return Response(data=data, status=status.HTTP_200_OK)
