@@ -20,6 +20,7 @@ class BotVerificationView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         verif_code = self.request.data.get("verification_code")
 
+
         if not verif_code:
             raise ValidationError({"Указан неверный код проверки!"})
 
