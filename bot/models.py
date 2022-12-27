@@ -1,5 +1,6 @@
 from django.db import models
-from django.utils.crypto import get_random_string
+import string
+import random
 
 
 class TgUser(models.Model):
@@ -12,7 +13,7 @@ class TgUser(models.Model):
                              on_delete=models.CASCADE
                              )
     verification_code = models.CharField(verbose_name="Код верификации",
-                                         max_length=15,
+                                         max_length=6,
                                          unique=True,
                                          null=True,
                                          blank=True
@@ -23,7 +24,12 @@ class TgUser(models.Model):
         verbose_name_plural = "Пользователи Tlgrm"
 
     def generate_verification_code(self):
-        code = get_random_string(12)
-        self.verification_code = code
+        code = string.digits + string.ascii_letters
+        verification_code = ''
+
+        for _ in range(10):
+            verification_code += code[random.randrange(0, len(code))]
+
+        self.verification_code = verification_code
         self.save()
 
