@@ -12,7 +12,7 @@ class TgUser(models.Model):
                              on_delete=models.CASCADE
                              )
     verification_code = models.CharField(verbose_name="Код верификации",
-                                         max_length=6,
+                                         max_length=15,
                                          unique=True,
                                          null=True,
                                          blank=True
