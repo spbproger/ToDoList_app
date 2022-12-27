@@ -1,31 +1,30 @@
-from __future__ import annotations
-from typing import List
-from marshmallow import EXCLUDE
-from dataclasses import field
+from dataclasses import dataclass, field
+from typing import List, Optional
+
 import marshmallow_dataclass
-from marshmallow_dataclass import dataclass
+from marshmallow import EXCLUDE
 
 
 @dataclass
 class MessageFrom:
     id: int
     is_bot: bool
-    first_name: str | None
-    last_name: str | None
-    username: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
 
     class Meta:
         unknown = EXCLUDE
 
 
 @dataclass
-class MessageChat:
+class Chat:
     id: int
-    title: str | None
-    first_name: str | None
-    last_name: str | None
-    username: str = ""
     type: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
+    title: Optional[str]
 
     class Meta:
         unknown = EXCLUDE
@@ -34,10 +33,10 @@ class MessageChat:
 @dataclass
 class Message:
     message_id: int
-    msg_from: MessageFrom = field(metadata={"data_key": "from"})
-    chat: MessageChat
+    from_: MessageFrom = field(metadata={'data_key': 'from'})
+    chat: Chat
     date: int
-    text: str | None
+    text: Optional[str]
 
     class Meta:
         unknown = EXCLUDE

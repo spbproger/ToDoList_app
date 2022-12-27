@@ -1,5 +1,4 @@
 import requests
-
 from bot.tg import dc
 
 
@@ -18,7 +17,7 @@ class TgClient:
         Получение ботом исходящих сообщений от пользователя
         """
         url = self.get_url("getUpdates")
-        response = requests.get(url, params={"offset": offset, "timeout": timeout})
+        response = requests.get(url, params={"offset": offset, "timeout": timeout, "allowed_updates": ["update_id", "message"]})
         print(response.json())
         return dc.GET_UPDATES_RESPONSE_SCHEMA.load(response.json())
 
@@ -27,6 +26,6 @@ class TgClient:
         Получение пользователем сообщений от бота
         """
         url = self.get_url("sendMessage")
-        response = requests.get(url, params={"chat_id": chat_id, "text": text})
+        response = requests.post(url, params={"chat_id": chat_id, "text": text})
         print(response.json())
         return dc.SEND_MESSAGE_RESPONSE_SCHEMA.load(response.json())

@@ -1,3 +1,4 @@
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -8,12 +9,60 @@ from goals.models import Goal, GoalCategory
 
 
 class Command(BaseCommand):
-    help = "Runs Telegram bot"
-    tg_client = TgClient(settings.BOT_TOKEN)
+    help = "Run Telegram bot"
     offset = 0
 
-    # def choose_categories(self, msg: Message, tg_user: TgUser):
-    #     pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tg_client = TgClient(settings.BOT_TOKEN)
+
+    def handle(self, *args, **kwargs):
+        while True:
+            response = self.tg_client.get_updates(offset=self.offset)
+
+            for item in response.result:
+                self.offset = item.update_id + 1
+                if hasattr(item, "message"):
+                    self.handle_message(item.message)
+                    continue
+
+    def handle_message(self, msg: Message):
+        tg_user, created = TgUser.objects.get_or_create(
+            tg_user_id=msg.from_.id,
+            tg_chat_id=msg.chat.id,
+        )
+
+        if created:
+            tg_user.generate_verification_code()
+            self.tg_client.send_message(
+                chat_id=msg.chat.id,
+                text=f"Для подтверждения своего аккаунта\n"
+                     f"введите, пожалуйста, проверочный код:\n\n"
+                     f"{tg_user.verification_code}\n\n"
+                     f"на странице с адресом spbproger.tk"
+            )
+
+        elif not tg_user.user:
+            tg_user.generate_verification_code()
+            self.tg_client.send_message(
+                tg_user.tg_chat_id,
+                f'Для дальнейшей работы, пожалуйста, подтвердите свой аккаунт. '
+                f'Необходимо ввести проверочный код: '
+                f'{tg_user.verification_code}'
+            )
+
+        if msg.text == "/goals":
+            self.get_goals(msg, tg_user)
+
+        elif msg.text == "/create":
+            self.offset += 1
+            self.choose_category(msg, tg_user)
+
+        else:
+            self.tg_client.send_message(
+                chat_id=msg.chat.id,
+                text=f"Вы ввели неизвестную команду ( ** {msg.text} ** )!"
+            )
 
     def choose_category(self, msg: Message, tg_user: TgUser):
         goal_categories = GoalCategory.objects.filter(
@@ -46,13 +95,13 @@ class Command(BaseCommand):
                     elif msg.text == "/cancel":
                         self.tg_client.send_message(
                             chat_id=msg.chat.id,
-                            text="Действие отменено ☹!"
+                            text="Действие отменено."
                         )
                         is_running = False
                     else:
                         self.tg_client.send_message(
                             chat_id=msg.chat.id,
-                            text=f"Категории с названием {msg.text} не существует ☹!"
+                            text=f"Категории с названием '{msg.text}' не существует."
                         )
                         is_running = False
 
@@ -60,7 +109,7 @@ class Command(BaseCommand):
 
         self.tg_client.send_message(
             chat_id=msg.chat.id,
-            text="Введите название цели для ее создания!"
+            text="Введите название новой цели!"
         )
 
         # ожидания цели от пользователя
@@ -74,7 +123,7 @@ class Command(BaseCommand):
                 if item.message.text == "/cancel":
                     self.tg_client.send_message(
                         chat_id=msg.chat.id,
-                        text="Действие отменено ☹!"
+                        text="Действие отменено."
                     )
                     is_running = False
                 else:
@@ -85,7 +134,7 @@ class Command(BaseCommand):
                     )
                     self.tg_client.send_message(
                         chat_id=msg.chat.id,
-                        text=f"Цель успешно {goal.title} добавлена👍!"
+                        text=f"Цель '{goal.title}' добавлена."
                     )
                     is_running = False
 
@@ -100,58 +149,17 @@ class Command(BaseCommand):
         if not goals:
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f"На сегодня целей нет")
+                text=f"На сегодня у Вас целей нет")
             return None
 
         goals_str = "\n".join(["🔹 " + goal.title for goal in goals])
 
         self.tg_client.send_message(
             chat_id=msg.chat.id,
-            text=f"📌 Ваш список целей:\n"
+            text=f"Список ваших целей:\n"
                  f"===================\n"
                  f"{goals_str}:\n"
                  f"===================\n"
         )
 
-    def handle_message(self, msg: Message):
-        tg_user, created = TgUser.objects.get_or_create(
-            tg_user_id=msg.msg_from.id,
-            tg_chat_id=msg.chat.id,
-            tg_username=msg.chat.username,
-        )
 
-        if created:
-            tg_user.generate_verification_code()
-            self.tg_client.send_message(
-                chat_id=msg.chat.id,
-                text=f"Для подтверждения аккаунта\n"
-                     f"введите код проверки:\n\n"
-                     f"{tg_user.verification_code}\n\n"
-                     f"на сайте pesaulov87.ga"
-            )
-        if msg.text == "/goals":
-            self.get_goals(msg, tg_user)
-
-        elif msg.text == "/create":
-            self.offset += 1
-            self.choose_category(msg, tg_user)
-
-        else:
-            self.tg_client.send_message(
-                chat_id=msg.chat.id,
-                text=f"⛔ Вы ввели неизвестную команду ( ** {msg.text} ** )!"
-            )
-        # else:
-        #     self.tg_client.send_message(
-        #         chat_id=msg.chat.id,
-        #         text="Ваш аккаунт уже был подтвержден!"
-        #     )
-
-    def handle(self, *args, **options):
-        while True:
-            res = self.tg_client.get_updates(offset=self.offset)
-
-            for item in res.result:
-                self.offset = item.update_id + 1
-                if hasattr(item, "message"):
-                    self.handle_message(item.message)
