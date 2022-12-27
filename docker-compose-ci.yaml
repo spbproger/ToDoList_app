@@ -39,7 +39,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DEBUG: ${DEBUG}
+      DEBUG: False
       SECRET_KEY: ${SECRET_KEY}
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
       SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
