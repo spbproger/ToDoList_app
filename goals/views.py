@@ -161,10 +161,15 @@ class CommentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentCreateSerializer
 
+    def perform_create(self, serializer: CommentCreateSerializer):
+        """Для сохранения нового экземпляра объекта (комментария)"""
+        serializer.save(goal_id=self.request.data["goal"])
+
 
 class CommentListView(ListAPIView):
     model = GoalComment
-    permission_classes = [CommentPermissions]
+    # permission_classes = [CommentPermissions]
+    permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     pagination_class = LimitOffsetPagination
 
@@ -172,11 +177,12 @@ class CommentListView(ListAPIView):
         filters.OrderingFilter,
         DjangoFilterBackend
     ]
-    filterset_fields = ["goal"]
+    # filterset_fields = ["goal"]
+    ordering_fields = ["goal"]
     ordering = ["-created"]
 
     def get_queryset(self):
-        return self.model.objects.filter(
+        return GoalComment.objects.filter(
             goal__category__board__participants__user=self.request.user
         )
 
@@ -187,10 +193,6 @@ class CommentView(RetrieveUpdateDestroyAPIView):
     permission_classes = [CommentPermissions]
 
     def get_queryset(self):
-        return self.model.objects.filter(
+        return GoalComment.objects.filter(
             goal__category__board__participants__user=self.request.user
         )
-
-
-
-

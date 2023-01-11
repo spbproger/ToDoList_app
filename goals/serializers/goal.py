@@ -1,6 +1,6 @@
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 from core.serializers import ProfileSerializer
-from goals.models import Goal, GoalCategory, BoardParticipant
+from goals.models import Goal, BoardParticipant
 from rest_framework.exceptions import ValidationError
 
 
@@ -12,7 +12,7 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
-	def validate(self, value: GoalCategory):
+	def validate(self, value: dict):
 		role_use = BoardParticipant.objects.filter(
 			user=value.get('user'),
 			board=value.get('category').board,

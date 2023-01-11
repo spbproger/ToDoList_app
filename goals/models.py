@@ -41,6 +41,9 @@ class BoardParticipant(DatesModelMixin):
         writer = 2, "Редактор"
         reader = 3, "Читатель"
 
+    editable_choices = Role.choices
+    editable_choices.pop(0)
+
     board = models.ForeignKey(
         Board,
         verbose_name="Доска",
@@ -121,7 +124,7 @@ class GoalComment(DatesModelMixin):
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
 
-    text = models.TextField(verbose_name="Комментарий", max_length=350)
+    text = models.TextField(verbose_name="Комментарий к цели", max_length=350, )
     goal = models.ForeignKey(Goal, verbose_name="Цель", on_delete=models.PROTECT, related_name="goal_comments")
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.PROTECT, related_name="goal_comments")
 

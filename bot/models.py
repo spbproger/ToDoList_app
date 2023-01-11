@@ -19,7 +19,6 @@ class TgUser(models.Model):
                                          blank=True
                                          )
 
-
     class Meta:
         verbose_name = "Пользователь Tlgrm"
         verbose_name_plural = "Пользователи Tlgrm"

@@ -91,8 +91,7 @@ class Command(BaseCommand):
         tg_client.send_message(chat_id=message.chat.id,
                                text=f"Для подтверждения аккаунта\n"
                                     f"введите код проверки:\n\n"
-                                    f"{verification_code}\n\n"
-                                    f"на сайте pesaulov87.ga")
+                                    f"{verification_code}\n\n")
 
     def update_tg_user_verification_code(self, message: Message, tg_client, verification_code) -> None:
         tg_user: Optional[TgUser] = TgUser.objects.filter(tg_user_id=message.from_.id)
@@ -135,7 +134,7 @@ class Command(BaseCommand):
             goal_categories_str: str = f"🏷 Выберите категорию:\n" \
                                        f"=====================\n" \
                                        f"\n🔹 " + "\n".join(list_goal_categories) + "\n" \
-                                                                                   f"\n(для отмены действия введите команду /cancel)\n"
+                                       f"\n(для отмены действия введите команду /cancel)\n"
         else:
             goal_categories_str: str = f"У Вас нет ни одной категории!"
         tg_client.send_message(chat_id=message.chat.id, text=goal_categories_str)
