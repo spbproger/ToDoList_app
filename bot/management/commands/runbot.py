@@ -53,8 +53,8 @@ class Command(BaseCommand):
                 else:
                     tg_client.send_message(
                         chat_id=item.message.chat.id,
-                        text="Неизвестная команда☹!\n\n"
-                             "Доступны следующие команды:\n"
+                        text="Команда неизвестна!\n\n"
+                             "Выберите одну из предложенных:\n"
                              "/goals - просмотр целей\n"
                              "/create - создать цель")
                     continue
@@ -118,7 +118,9 @@ class Command(BaseCommand):
                              f"\nприоритет: {goal.Priority.choices[goal.priority - 1][1]}\n" \
                              f"дедлайн: {goal.due_date}\n"
         else:
-            goals_str: str = f"На данный момент целей нет!"
+            goals_str: str = f"На данный момент целей нет!\n" \
+                             f"/goals - просмотр целей\n" \
+                             f"/create - создать цель"
 
         tg_client.send_message(chat_id=message.chat.id, text=goals_str)
 
@@ -134,7 +136,7 @@ class Command(BaseCommand):
             goal_categories_str: str = f"🏷 Выберите категорию:\n" \
                                        f"=====================\n" \
                                        f"\n " + "\n".join(list_goal_categories) + "\n" \
-                                                                                   f"\n(для отмены действия введите команду /cancel)\n"
+                                       f"\n(для отмены действия введите команду /cancel)\n"
         else:
             goal_categories_str: str = f"У Вас нет ни одной категории!"
         tg_client.send_message(chat_id=message.chat.id, text=goal_categories_str)
@@ -153,7 +155,11 @@ class Command(BaseCommand):
                     continue
 
                 if item.message.text.strip().lower() == "/cancel":
-                    tg_client.send_message(chat_id=item.message.chat.id, text="Отменено!")
+                    tg_client.send_message(chat_id=item.message.chat.id,
+                                           text="Отменено!\n"
+                                                "/goals - просмотр целей\n" 
+                                                "/create - создать цель"
+                                           )
                     return None
 
                 elif item.message.text.strip().lower() in [goal_category.title.lower() for goal_category in goal_categories]:
