@@ -133,7 +133,7 @@ class Command(BaseCommand):
             list_goal_categories: list = [goal_category.title for goal_category in goal_categories]
             goal_categories_str: str = f" Выберите категорию:\n" \
                                        f"=====================\n" \
-                                       f"\n".join(list_goal_categories) + "\n" \
+                                       f"\n" + "\n".join(list_goal_categories) + "\n" \
                                        f"\n(для отмены действия введите команду /cancel)\n"
         else:
             goal_categories_str: str = f"У Вас нет ни одной категории!"
@@ -178,7 +178,7 @@ class Command(BaseCommand):
                     continue
 
                 if item.message.text.strip().lower() == "/cancel":
-                    tg_client.send_message(chat_id=item.message.chat.id, text="⛔ Cоздание цели прервано!")
+                    tg_client.send_message(chat_id=item.message.chat.id, text="Cоздание цели прервано!")
                     return
                 else:
                     due_date = datetime.date.today() + datetime.timedelta(days=14)
