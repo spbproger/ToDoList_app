@@ -8,19 +8,16 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = GoalComment
-		read_only_fields = ('id', 'user', 'created', 'updated')
+		read_only_fields = ('id', 'created', 'updated', 'user')
 		fields = '__all__'
 
 	def validate(self, value):
-		if value.is_deleted:
-			raise serializers.ValidationError('not allowed in deleted category')
-
 		if not BoardParticipant.objects.filter(
-				board=value,
+				board=value['goal'].category.board,
 				role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
 				user=self.context['request'].user
 		).exists():
-			raise serializers.ValidationError('not allowed for reader')
+			raise serializers.ValidationError('Не доступно для прочтения. Только для владельца, либо редактора')
 		return value
 
 
