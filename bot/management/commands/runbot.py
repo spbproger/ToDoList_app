@@ -169,8 +169,8 @@ class Command(BaseCommand):
                 else:
                     tg_client.send_message(
                         chat_id=item.message.chat.id,
-                        text="Такой категории нет, повторите ввод.\n\n"
-                             "(для отмены действия введите команду /cancel)")
+                        text="Такой категории нет. Уточните ввод.\n\n"
+                             "Для отмены выберите /cancel)")
 
     def create_goal(self, tg_client: TgClient, tg_user: TgUser, goal_category: GoalCategory) -> None:
         """
@@ -196,5 +196,8 @@ class Command(BaseCommand):
                         due_date=due_date.strftime("%Y-%m-%d")
                     )
                     tg_client.send_message(
-                        chat_id=item.message.chat.id, text=f"Цель **{goal.title}** успешно создана")
+                        chat_id=item.message.chat.id, text=f"Цель **{goal.title}** успешно создана\n"
+                                                           "/goals - просмотр целей\n"
+                                                           "/create - создать цель"
+                    )
                     return
