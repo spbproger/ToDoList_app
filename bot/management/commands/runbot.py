@@ -115,8 +115,8 @@ class Command(BaseCommand):
                              f"===================\n"
             for goal in goals:
                 goals_str += f"{goal.title}" \
-                             f"\nприоритет: {goal.Priority.choices[goal.priority - 1][1]}\n" \
-                             f"дедлайн: {goal.due_date}\n"
+                             f"\n - приоритет: {goal.Priority.choices[goal.priority - 1][1]}\n" \
+                             f" - дедлайн: {goal.due_date}\n\n"
         else:
             goals_str: str = f"На данный момент целей нет!\n" \
                              f"/goals - просмотр целей\n" \
