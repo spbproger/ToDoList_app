@@ -111,14 +111,14 @@ class Command(BaseCommand):
         goals: Optional[List[Goal]] = Goal.objects.filter(
             category__board__participants__user__id=tg_user.user_id).exclude(status=Goal.Status.archived)
         if goals:
-            goals_str: str = f"📌 Ваш список целей:\n" \
+            goals_str: str = f"Список имеющихся целей:\n" \
                              f"===================\n"
             for goal in goals:
-                goals_str += "\n🔹 " + f"{goal.title}" \
-                                      f"\nприоритет: {goal.Priority.choices[goal.priority - 1][1]}\n" \
-                                      f"дедлайн: {goal.due_date}\n"
+                goals_str += f"{goal.title}" \
+                             f"\nприоритет: {goal.Priority.choices[goal.priority - 1][1]}\n" \
+                             f"дедлайн: {goal.due_date}\n"
         else:
-            goals_str: str = f"✅ У Вас нет целей!"
+            goals_str: str = f"На данный момент целей нет!"
 
         tg_client.send_message(chat_id=message.chat.id, text=goals_str)
 
@@ -131,9 +131,9 @@ class Command(BaseCommand):
             board__participants__user__id=tg_user.user_id, is_deleted=False)
         if goal_categories:
             list_goal_categories: list = [goal_category.title for goal_category in goal_categories]
-            goal_categories_str: str = f"🏷 Выберите категорию:\n" \
+            goal_categories_str: str = f" Выберите категорию:\n" \
                                        f"=====================\n" \
-                                       f"\n🔹 " + "\n".join(list_goal_categories) + "\n" \
+                                       f"\n".join(list_goal_categories) + "\n" \
                                        f"\n(для отмены действия введите команду /cancel)\n"
         else:
             goal_categories_str: str = f"У Вас нет ни одной категории!"
@@ -153,12 +153,12 @@ class Command(BaseCommand):
                     continue
 
                 if item.message.text.strip().lower() == "/cancel":
-                    tg_client.send_message(chat_id=item.message.chat.id, text="⛔ Действие отменено!")
+                    tg_client.send_message(chat_id=item.message.chat.id, text="Отменено!")
                     return None
 
-                elif item.message.text.strip().lower() in [goal_category.title for goal_category in goal_categories]:
+                elif item.message.text.strip().lower() in [goal_category.title.lower() for goal_category in goal_categories]:
                     for goal_category in goal_categories:
-                        if item.message.text.strip().lower() == goal_category.title:
+                        if item.message.text.strip().lower() == goal_category.title.lower():
                             return goal_category
                 else:
                     tg_client.send_message(
