@@ -1,9 +1,10 @@
 import datetime
+import random
 from typing import Optional, List
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils.crypto import get_random_string
+#from django.utils.crypto import get_random_string
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
@@ -76,7 +77,10 @@ class Command(BaseCommand):
         Создание кода верификации
         :return: get_random_string
         """
-        return get_random_string(length=15)
+        # return get_random_string(length=15)
+        code = "qwertyuiopasdfghjklzxcvbnm1234567890(){}:';[]/.,"
+        s = ''.join(random.choices(code, k=6))
+        return s
 
     def create_tg_user(self, message: Message, tg_client: TgClient, verification_code: str) -> None:
         """
