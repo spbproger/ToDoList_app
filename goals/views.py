@@ -80,8 +80,8 @@ class GoalCategoryListView(ListAPIView):
     ]
     filterset_fields = ['board']
     ordering_fields = ["title", "created"]
-    ordering = ["title"]
-    search_fields = ["title",]
+    ordering = ["title", "created"]
+    search_fields = ["title", ]
 
     def get_queryset(self):
         return GoalCategory.objects.filter(
@@ -113,7 +113,7 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 
 
 class GoalCreateView(CreateAPIView):
-    #model = Goal
+    model = Goal
     permission_classes = [IsAuthenticated]
     serializer_class = GoalCreateSerializer
 
@@ -131,12 +131,13 @@ class GoalListView(ListAPIView):
     filterset_class = GoalDateFilter
     ordering_fields = ["title", "due_date"]
     ordering = ["title"]
-    search_fields = ["title", ]
+    search_fields = ["title", "description"]
 
     def get_queryset(self):
         return self.model.objects.filter(
             category__board__participants__user=self.request.user
-        ).exclude(status=self.model.Status.archived)
+        )
+    #.exclude(status=self.model.Status.archived)
 
 
 class GoalView(RetrieveUpdateDestroyAPIView):
@@ -160,10 +161,6 @@ class CommentCreateView(CreateAPIView):
     model = GoalComment
     permission_classes = [IsAuthenticated]
     serializer_class = CommentCreateSerializer
-
-    def perform_create(self, serializer: CommentCreateSerializer):
-        """Для сохранения нового экземпляра объекта (комментария)"""
-        serializer.save(goal_id=self.request.data["goal"])
 
 
 class CommentListView(ListAPIView):

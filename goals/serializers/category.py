@@ -11,15 +11,16 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
-	def validate_category(self, value: GoalCategory):
+	def validate_board(self, value):
 		if value.is_deleted:
-			raise serializers.ValidationError('Not allowed to be deleted')
+			raise serializers.ValidationError('not allowed in deleted category')
+
 		if not BoardParticipant.objects.filter(
 				board=value,
 				role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
 				user=self.context['request'].user
 		).exists():
-			raise serializers.ValidationError('You must be owner or writer')
+			raise serializers.ValidationError('not allowed for reader')
 		return value
 
 
@@ -28,6 +29,5 @@ class CategorySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = GoalCategory
-		fields = "__all__"
 		read_only_fields = ("id", "created", "updated", "user", "board")
-
+		fields = "__all__"
