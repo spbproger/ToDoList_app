@@ -1,4 +1,6 @@
-## Дипломный проект Skypro: diploma_stn
+## The Calendar application for working with setting and tracking the fulfillment of goals and objectives. Thesis on the Python developer course.
+
+## ToDoList
 Приложение "Календарь" для работы с постановкой и отслеживанием выполнения целей и задач. 
 Дипломная работа на курсе Python-разработчика. 
 ***
